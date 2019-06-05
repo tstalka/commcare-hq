@@ -12,6 +12,7 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase, override_settings
 
+import mock
 import six
 from couchdbkit.exceptions import ResourceNotFound
 from six.moves import zip
@@ -20,16 +21,12 @@ from casexml.apps.case.mock import CaseBlock
 from couchforms.models import XFormInstance
 from dimagi.utils.parsing import ISO_DATETIME_FORMAT
 
+import corehq.apps.couch_sql_migration.couchsqlmigration as mod
 from corehq.apps.cleanup.management.commands.swap_duplicate_xforms import (
     BAD_FORM_PROBLEM_TEMPLATE,
     FIXED_FORM_PROBLEM_TEMPLATE,
 )
 from corehq.apps.commtrack.helpers import make_product
-from corehq.apps.couch_sql_migration.couchsqlmigration import (
-    MigrationRestricted,
-    PartiallyLockingQueue,
-    get_diff_db,
-)
 from corehq.apps.domain.dbaccessors import get_doc_ids_in_domain_by_type
 from corehq.apps.domain.models import Domain
 from corehq.apps.domain.shortcuts import create_domain
@@ -37,7 +34,7 @@ from corehq.apps.domain_migration_flags.models import DomainMigrationProgress
 from corehq.apps.hqcase.utils import submit_case_blocks
 from corehq.apps.receiverwrapper.exceptions import LocalSubmissionError
 from corehq.apps.receiverwrapper.util import submit_form_locally
-from corehq.blobs import get_blob_db
+from corehq.blobs import get_blob_db, NotFound as BlobNotFound
 from corehq.blobs.tests.util import TemporaryS3BlobDB
 from corehq.form_processor.backends.sql.dbaccessors import (
     CaseAccessorSQL,
@@ -108,7 +105,7 @@ class BaseMigrationTestCase(TestCase, TestFileMixin):
         self.assertTrue(should_use_sql_backend(domain))
 
     def _compare_diffs(self, expected):
-        diff_db = get_diff_db(self.domain_name)
+        diff_db = mod.get_diff_db(self.domain_name)
         diffs = diff_db.get_diffs()
         json_diffs = [(diff.kind, diff.json_diff) for diff in diffs]
         self.assertEqual(expected, json_diffs)
@@ -131,12 +128,12 @@ class BaseMigrationTestCase(TestCase, TestFileMixin):
 class MigrationTestCase(BaseMigrationTestCase):
     def test_migration_blacklist(self):
         COUCH_SQL_MIGRATION_BLACKLIST.set(self.domain_name, True, NAMESPACE_DOMAIN)
-        with self.assertRaises(MigrationRestricted):
+        with self.assertRaises(mod.MigrationRestricted):
             self._do_migration(self.domain_name)
         COUCH_SQL_MIGRATION_BLACKLIST.set(self.domain_name, False, NAMESPACE_DOMAIN)
 
     def test_migration_custom_report(self):
-        with self.assertRaises(MigrationRestricted):
+        with self.assertRaises(mod.MigrationRestricted):
             self._do_migration("up-nrhm")
 
     def test_basic_form_migration(self):
@@ -799,7 +796,7 @@ class LedgerMigrationTests(BaseMigrationTestCase):
 
 class TestLockingQueues(TestCase):
     def setUp(self):
-        self.queues = PartiallyLockingQueue()
+        self.queues = mod.PartiallyLockingQueue()
 
     def _add_to_queues(self, queue_obj_id, lock_ids):
         self.queues._add_item(lock_ids, DummyObject(queue_obj_id))
@@ -913,6 +910,48 @@ class TestLockingQueues(TestCase):
         queue_obj = DummyObject('west osceola')
         self.queues._add_item(lock_ids, queue_obj)
         self.assertTrue(self.queues.full)  # full when over full
+
+
+class TestHelperFunctions(TestCase):
+
+    def setUp(self):
+        super(TestHelperFunctions, self).setUp()
+
+        FormProcessorTestUtils.delete_all_cases_forms_ledgers()
+        self.domain_name = uuid.uuid4().hex
+        self.domain = create_domain(self.domain_name)
+        self.assertFalse(should_use_sql_backend(self.domain_name))
+
+    def tearDown(self):
+        FormProcessorTestUtils.delete_all_cases_forms_ledgers()
+        self.domain.delete()
+
+    def get_form_with_missing_xml(self):
+        form = submit_form_locally(TEST_FORM, self.domain_name).xform
+        form = FormAccessors(self.domain_name).get_form(form.form_id)
+        blobs = get_blob_db()
+        with mock.patch.object(blobs.metadb, "delete"):
+            if isinstance(form, XFormInstance):
+                # couch
+                form.delete_attachment("form.xml")
+                self.assertIsNone(form.get_xml())
+            else:
+                # sql
+                blobs.delete(form.get_attachment_meta("form.xml").key)
+                with self.assertRaises(BlobNotFound):
+                    form.get_xml()
+        return form
+
+    def test_sql_form_to_json_with_missing_xml(self):
+        self.domain.use_sql_backend = True
+        self.domain.save()
+        form = self.get_form_with_missing_xml()
+        data = mod.sql_form_to_json(form)
+        self.assertEqual(data["form"], {})
+
+    def test_get_case_ids_with_missing_xml(self):
+        form = self.get_form_with_missing_xml()
+        self.assertEqual(mod.get_case_ids(form), ["test-case"])
 
 
 class DummyObject(object):
