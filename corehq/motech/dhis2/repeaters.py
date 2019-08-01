@@ -8,7 +8,12 @@ from memoized import memoized
 
 from corehq.form_processor.interfaces.dbaccessors import FormAccessors
 from corehq.motech.dhis2.dhis2_config import Dhis2Config, Dhis2EntityConfig
-from corehq.motech.repeaters.models import CaseRepeater, FormRepeater
+from corehq.motech.repeaters.models import (
+    CaseRepeater,
+    FormPayloadMixin,
+    FormRepeater,
+    HasOwnFormClassMixin,
+)
 from corehq.motech.repeaters.repeater_generators import FormRepeaterJsonPayloadGenerator
 from corehq.motech.repeaters.signals import create_repeat_records
 from couchforms.signals import successful_form_received
@@ -21,7 +26,7 @@ from corehq.toggles import DHIS2_INTEGRATION
 from corehq.util import reverse
 
 
-class Dhis2EntityRepeater(CaseRepeater):
+class Dhis2EntityRepeater(CaseRepeater, FormPayloadMixin, HasOwnFormClassMixin):
     class Meta(object):
         app_label = 'repeaters'
 
@@ -34,8 +39,12 @@ class Dhis2EntityRepeater(CaseRepeater):
     def __str__(self):
         return f'Forwarding cases to "{self.url}" as DHIS2 Tracked Entity instances'
 
+    @classmethod
+    def available_for_domain(cls, domain):
+        return DHIS2_INTEGRATION.enabled(domain)
 
-class Dhis2Repeater(FormRepeater):
+
+class Dhis2Repeater(FormRepeater, HasOwnFormClassMixin):
     class Meta(object):
         app_label = 'repeaters'
 
@@ -56,17 +65,6 @@ class Dhis2Repeater(FormRepeater):
 
     def __hash__(self):
         return hash(self.get_id)
-
-    @memoized
-    def payload_doc(self, repeat_record):
-        return FormAccessors(repeat_record.domain).get_form(repeat_record.payload_id)
-
-    @property
-    def form_class_name(self):
-        """
-        The class name used to determine which edit form to use
-        """
-        return self.__class__.__name__
 
     @classmethod
     def available_for_domain(cls, domain):

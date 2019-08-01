@@ -33,9 +33,13 @@ from django.urls import reverse
 
 from corehq.motech.const import DIRECTION_IMPORT
 from casexml.apps.case.xform import extract_case_blocks
-from corehq.motech.repeaters.models import CaseRepeater
+from corehq.motech.repeaters.models import (
+    CaseRepeater,
+    FormPayloadMixin,
+    HasOwnFormClassMixin,
+)
 from corehq.motech.repeaters.repeater_generators import FormRepeaterJsonPayloadGenerator
-from corehq.form_processor.interfaces.dbaccessors import FormAccessors, CaseAccessors
+from corehq.form_processor.interfaces.dbaccessors import CaseAccessors
 from corehq.toggles import OPENMRS_INTEGRATION
 from corehq.motech.repeaters.signals import create_repeat_records
 from couchforms.signals import successful_form_received
@@ -59,7 +63,7 @@ class AtomFeedStatus(DocumentSchema):
 
 # it actually triggers on forms,
 # but I wanted to get a case type, and this is the easiest way
-class OpenmrsRepeater(CaseRepeater):
+class OpenmrsRepeater(CaseRepeater, FormPayloadMixin, HasOwnFormClassMixin):
     class Meta(object):
         app_label = 'repeaters'
 
@@ -119,17 +123,6 @@ class OpenmrsRepeater(CaseRepeater):
                 if obs_mapping.value.check_direction(DIRECTION_IMPORT) and obs_mapping.case_property:
                     obs_mappings[obs_mapping.concept].append(obs_mapping)
         return obs_mappings
-
-    @memoized
-    def payload_doc(self, repeat_record):
-        return FormAccessors(repeat_record.domain).get_form(repeat_record.payload_id)
-
-    @property
-    def form_class_name(self):
-        """
-        The class name used to determine which edit form to use
-        """
-        return self.__class__.__name__
 
     @classmethod
     def available_for_domain(cls, domain):

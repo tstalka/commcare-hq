@@ -93,7 +93,23 @@ DIGEST_AUTH = "digest"
 OAUTH1 = "oauth1"
 
 
-class Repeater(QuickCachedDocumentMixin, Document):
+class HasOwnFormClassMixin:
+    """
+    Mixin for Repeaters that have their own Form class
+    """
+
+    @property
+    def form_class_name(self):
+        """
+        Return the name of the class whose edit form this class uses.
+
+        (Most classes that extend CaseRepeater, and all classes that
+        extend FormRepeater, use the same form.)
+        """
+        return self.__class__.__name__
+
+
+class Repeater(QuickCachedDocumentMixin, Document, HasOwnFormClassMixin):
     """
     Represents the configuration of a repeater. Will specify the URL to forward to and
     other properties of the configuration.
@@ -328,19 +344,19 @@ class Repeater(QuickCachedDocumentMixin, Document):
             self.generator.handle_failure(result, self.payload_doc(repeat_record), repeat_record)
         return attempt
 
-    @property
-    def form_class_name(self):
-        """
-        Return the name of the class whose edit form this class uses.
 
-        (Most classes that extend CaseRepeater, and all classes that
-        extend FormRepeater, use the same form.)
-        """
-        return self.__class__.__name__
+class FormPayloadMixin:
+    """
+    Mixin for Repeaters whose payload is a form
+    """
+
+    @memoized
+    def payload_doc(self, repeat_record):
+        return FormAccessors(repeat_record.domain).get_form(repeat_record.payload_id)
 
 
 @six.python_2_unicode_compatible
-class FormRepeater(Repeater):
+class FormRepeater(Repeater, FormPayloadMixin):
     """
     Record that forms should be repeated to a new url
 
@@ -351,10 +367,6 @@ class FormRepeater(Repeater):
     include_app_id_param = BooleanProperty(default=True)
     white_listed_form_xmlns = StringListProperty(default=[])  # empty value means all form xmlns are accepted
     friendly_name = _("Forward Forms")
-
-    @memoized
-    def payload_doc(self, repeat_record):
-        return FormAccessors(repeat_record.domain).get_form(repeat_record.payload_id)
 
     @property
     def form_class_name(self):
@@ -468,7 +480,7 @@ class UpdateCaseRepeater(CaseRepeater):
 
 
 @six.python_2_unicode_compatible
-class ShortFormRepeater(Repeater):
+class ShortFormRepeater(Repeater, FormPayloadMixin):
     """
     Record that form id & case ids should be repeated to a new url
 
@@ -478,10 +490,6 @@ class ShortFormRepeater(Repeater):
     friendly_name = _("Forward Form Stubs")
 
     payload_generator_classes = (ShortFormRepeaterJsonPayloadGenerator,)
-
-    @memoized
-    def payload_doc(self, repeat_record):
-        return FormAccessors(repeat_record.domain).get_form(repeat_record.payload_id)
 
     def allowed_to_forward(self, payload):
         return payload.xmlns != DEVICE_LOG_XMLNS
