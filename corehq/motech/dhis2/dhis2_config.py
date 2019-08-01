@@ -5,6 +5,7 @@ import six
 from dimagi.ext.couchdbkit import (
     DocumentSchema,
     ListProperty,
+    SchemaDictProperty,
     SchemaListProperty,
     SchemaProperty,
     StringProperty,
@@ -45,3 +46,22 @@ class Dhis2FormConfig(DocumentSchema):
 
 class Dhis2Config(DocumentSchema):
     form_configs = ListProperty(Dhis2FormConfig)
+
+
+class Dhis2CaseConfig(DocumentSchema):
+    """
+    A Dhis2CaseConfig maps a case type to a tracked entity type.
+
+    ``attributes`` is keyed on tracked entity attribute ID, and maps to
+    case properties or constants.
+    """
+    case_type = StringProperty()
+    te_type_id = StringProperty()
+    org_unit_id = SchemaProperty(ValueSource)
+    attributes = SchemaDictProperty(ValueSource)
+
+    form_configs = ListProperty(Dhis2FormConfig)
+
+
+class Dhis2EntityConfig(DocumentSchema):
+    case_config = ListProperty(Dhis2CaseConfig)

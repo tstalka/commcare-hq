@@ -7,8 +7,8 @@ from dimagi.ext.couchdbkit import SchemaProperty
 from memoized import memoized
 
 from corehq.form_processor.interfaces.dbaccessors import FormAccessors
-from corehq.motech.dhis2.dhis2_config import Dhis2Config
-from corehq.motech.repeaters.models import FormRepeater
+from corehq.motech.dhis2.dhis2_config import Dhis2Config, Dhis2EntityConfig
+from corehq.motech.repeaters.models import CaseRepeater, FormRepeater
 from corehq.motech.repeaters.repeater_generators import FormRepeaterJsonPayloadGenerator
 from corehq.motech.repeaters.signals import create_repeat_records
 from couchforms.signals import successful_form_received
@@ -19,6 +19,20 @@ from corehq.motech.requests import Requests
 from corehq.motech.dhis2.handler import send_data_to_dhis2
 from corehq.toggles import DHIS2_INTEGRATION
 from corehq.util import reverse
+
+
+class Dhis2EntityRepeater(CaseRepeater):
+    class Meta(object):
+        app_label = 'repeaters'
+
+    include_app_id_param = False
+    friendly_name = _("Forward Cases as DHIS2 Tracked Entities")
+    payload_generator_classes = (FormRepeaterJsonPayloadGenerator,)
+
+    dhis2_entity_config = SchemaProperty(Dhis2EntityConfig)
+
+    def __str__(self):
+        return f'Forwarding cases to "{self.url}" as DHIS2 Tracked Entity instances'
 
 
 class Dhis2Repeater(FormRepeater):
