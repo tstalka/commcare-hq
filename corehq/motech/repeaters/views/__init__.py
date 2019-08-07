@@ -6,6 +6,8 @@ from .repeaters import (
     EditCaseRepeaterView,
     EditFormRepeaterView,
     EditOpenmrsRepeaterView,
+    EditDhis2RepeaterView,
+    EditDhis2EntityRepeaterView,
     EditRepeaterView,
     drop_repeater,
     pause_repeater,
