@@ -78,6 +78,8 @@ class UploadedTranslationsValidator(object):
             self.expected_rows = get_bulk_app_single_sheet_by_name(
                 self.app,
                 self.lang_to_compare,
+                exclude_module=lambda module: SKIP_TRANSFEX_STRING in module.comment,
+                exclude_form=lambda form: SKIP_TRANSFEX_STRING in form.comment
             )
         else:
             self.expected_rows = get_bulk_app_sheets_by_name(
@@ -156,6 +158,7 @@ class UploadedTranslationsValidator(object):
         return {sheet.title: self._generate_diff(parsed_expected_rows, parsed_uploaded_rows)}
 
     def _processed_single_sheet_expected_rows(self, expected_rows, columns_to_compare):
+        # ToDo: find way to filter rows for single sheet as done for multi sheet in _filter_rows
         parsed_expected_rows = []
         for expected_row in expected_rows:
             _parsed_row = []

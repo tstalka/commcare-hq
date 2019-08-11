@@ -21,15 +21,20 @@ from corehq.apps.translations.app_translations.utils import (
 )
 
 
-def get_bulk_app_single_sheet_by_name(app, lang):
+def get_bulk_app_single_sheet_by_name(app, lang, exclude_module=None, exclude_form=None):
+
     rows = []
     for module in app.modules:
+        if exclude_module is not None and exclude_module(module):
+            continue
         sheet_name = get_module_sheet_name(module)
         rows.append(get_name_menu_media_row(module, sheet_name, lang))
         for module_row in get_module_rows([lang], module):
             rows.append(get_list_detail_case_property_row(module_row, sheet_name))
 
         for form in module.get_forms():
+            if exclude_form is not None and exclude_form(form):
+                continue
             sheet_name = get_form_sheet_name(form)
             rows.append(get_name_menu_media_row(form, sheet_name, lang))
             for label_name_media in get_form_question_label_name_media([lang], form):
