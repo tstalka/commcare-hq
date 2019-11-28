@@ -11,7 +11,9 @@ class AgeRangeFilter(BaseSingleOptionFilter):
 
     @property
     def options(self):
-        return [(str(k), str(k)) for k in range(0, 5)]
+        return [
+            (str(k), str(k)) for k in range(0, 5)
+        ]
 
 
 class AgeMonthsFilter(BaseSingleOptionFilter):
@@ -22,7 +24,19 @@ class AgeMonthsFilter(BaseSingleOptionFilter):
     @property
     def options(self):
         return [
-            (str(k), str(k)) for k in range(1, 13)
+            # (str(k), str(k)) for k in range(1, 13)
+            ('1', _('January')),
+            ('2', _('February')),
+            ('3', _('March')),
+            ('4', _('April')),
+            ('5', _('May')),
+            ('6', _('June')),
+            ('7', _('July')),
+            ('8', _('August')),
+            ('9', _('September')),
+            ('10', _('October')),
+            ('11', _('November')),
+            ('12', _('December')),
         ]
 
 
@@ -45,8 +59,10 @@ class GenderFilter(BaseSingleOptionFilter):
 
     @property
     def options(self):
-        return [('male', _('Male')),
-                ('female', _('Female'))]
+        return [
+            ('male', _('Male')),
+            ('female', _('Female'))
+        ]
 
 
 class SettlementAreaFilter(BaseSingleOptionFilter):
@@ -56,8 +72,10 @@ class SettlementAreaFilter(BaseSingleOptionFilter):
 
     @property
     def options(self):
-        return [('urban', _('Urban')),
-                ('rural', _('Rural'))]
+        return [
+            ('urban', _('Urban')),
+            ('rural', _('Rural'))
+        ]
 
 
 class BreastFeedingFilter(BaseSingleOptionFilter):
@@ -67,12 +85,14 @@ class BreastFeedingFilter(BaseSingleOptionFilter):
 
     @property
     def options(self):
-        return [('yes', _('Yes')),
-                ('no', _('No'))]
+        return [
+            ('yes', _('Yes')),
+            ('no', _('No'))
+        ]
 
 
 class SupplementsFilter(BaseMultipleOptionFilter):
-    slug = 'supplements_filter'
+    slug = 'supplements'
     label = _('Supplements')
     default_text = _('All')
 
@@ -92,7 +112,7 @@ class SupplementsFilter(BaseMultipleOptionFilter):
 
 
 class ExceptionDescriptionFilter(BaseSingleOptionFilter):
-    slug = 'exception_description_filter'
+    slug = 'exception_description'
     label = _('Exception description')
     default_text = _('All')
 
@@ -114,6 +134,19 @@ class FoodCodeFilter(BaseSingleOptionFilter):
         return [
             ('Food Code 1', 'Food Code 1'),
             ('Food Code 2', 'Food Code 2')
+        ]
+
+
+class FoodBaseTermFilter(BaseSingleOptionFilter):
+    slug = 'food_base_term'
+    label = _('Food Base Term')
+    default_text = _('All')
+
+    @property
+    def options(self):
+        return [
+            ('Food Base Term 1', 'Food Base Term 1'),
+            ('Food Base Term 2', 'Food Base Term 2')
         ]
 
 

@@ -29,12 +29,16 @@
 {% if report.needs_filters %}
     {% include 'reports/partials/description.html' %}
 {% else %}
-    {% for thisreport in reports %}
-        <br/>
-        <h4 class="media-heading">{{ thisreport.report_table.title }}<br/><small>{{ subtitle1 }}</small><br/><small>{{ subtitle2 }}</small></h4>
-        {% include 'inddex/partials/report_table.html' with report_table=thisreport.report_table charts=thisreport.charts chart_span=thisreport.chart_span%}
-        <br/>
-    {% endfor %}
+    {% if export_only %}
+        <h2><i>{% blocktrans %}This report is available only for export{% endblocktrans %}</i></h2>
+    {% else %}
+        {% for thisreport in reports %}
+          <br/>
+          <h4 class="media-heading">{{ thisreport.report_table.title }}<br/><small>{{ subtitle1 }}</small><br/><small>{{ subtitle2 }}</small></h4>
+          {% include 'inddex/partials/report_table.html' with report_table=thisreport.report_table charts=thisreport.charts chart_span=thisreport.chart_span%}
+          <br/>
+        {% endfor %}
+    {% endif %}
 {% endif %}
 {% endblock %}
 {% block posttable %}{% endblock %}

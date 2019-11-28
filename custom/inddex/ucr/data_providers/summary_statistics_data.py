@@ -22,7 +22,7 @@ class SummaryStatsNutrientDataProvider(SqlData):
     @property
     def rows(self):
         # TODO: calculate methods
-        return [['n', 'm', 'm', 'std', 5, 25, 50, 75,95]]
+        return [['n', 'm', 'm', 'std', 5, 25, 50, 75, 95]]
 
 
 class SummaryStatsRespondentDataProvider(SqlData):

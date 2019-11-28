@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from corehq.apps.reports.datatables import DataTablesColumn, DataTablesHeader
 from corehq.apps.reports.sqlreport import SqlData
 

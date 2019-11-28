@@ -170,7 +170,7 @@ class MonthsDateFilter(BaseReportFilter):
 
 
 class DateRangeFilter(DatespanFilter):
-    label = 'Plage de dates'
+    label = _('Date Range')
 
 
 class ProgramFilter(BaseReportFilter):

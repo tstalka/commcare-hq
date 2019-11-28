@@ -1,36 +1,27 @@
-from custom.inddex.filters import ExceptionDescriptionFilter, FoodCodeFilter, FoodTypeFilter
-from custom.inddex.ucr.report_bases.multi_tabular_report import MultiTabularReport
+from custom.inddex.ucr.report_bases.mixins import ExceptionReportBaseMixin
+from custom.inddex.utils import SingleTableReport
 
 
-class ExceptionReportBase(MultiTabularReport):
-    title = 'Exception Report'
-    name = f'{title}s'
-    slug = 'exception_report'
+class ExceptionReportBase(ExceptionReportBaseMixin, SingleTableReport):
 
     @property
     def fields(self):
-        return [
-            ExceptionDescriptionFilter,
-            FoodCodeFilter,
-            FoodTypeFilter,
-        ]
+        fields = super(ExceptionReportBase, self).fields
+        fields += self.get_base_fields()
+
+        return fields
 
     @property
     def report_config(self):
-        return {
-            'exception_description': self.exception_description,
-            'food_code': self.food_code,
-            'food_type': self.food_type,
-        }
+        report_config = super(ExceptionReportBase, self).report_config
+        report_config.update(**self.get_base_report_config(self))
+
+        return report_config
 
     @property
-    def exception_description(self):
-        return self.request.GET.get('exception_description') or ''
+    def rows(self):
+        return super(ExceptionReportBase, self).rows
 
     @property
-    def food_code(self):
-        return self.request.GET.get('food_code') or ''
-
-    @property
-    def food_type(self):
-        return self.request.GET.get('food_type') or ''
+    def headers(self):
+        return super(ExceptionReportBase, self).headers

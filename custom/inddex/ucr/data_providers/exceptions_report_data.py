@@ -33,7 +33,7 @@ class ExceptionReportDetailsData(SqlData):
         ]
 
 
-class ExceptionReportSummary(SqlData):
+class ExceptionReportSummaryData(SqlData):
     total_row = None
     title = 'Exception Report Summary'
     slug = 'exception_report_summary'

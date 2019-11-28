@@ -6,8 +6,6 @@ from custom.inddex.ucr.report_bases.summary_statistics_report import SummaryStat
 
 
 class SummaryStatisticsReport(SummaryStatisticsReportBase):
-    default_rows = 10
-    exportable = True
 
     @property
     @memoized

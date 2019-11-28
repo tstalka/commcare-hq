@@ -5,11 +5,6 @@ from custom.inddex.ucr.report_bases.food_consuption_report import FoodConsumptio
 
 
 class FoodConsumptionReport(FoodConsumptionReportBase):
-    title = 'Food Consumption Report'
-    name = f'{title} Reports'
-    slug = 'food_consumption_report'
-    default_rows = 10
-    exportable = True
 
     @property
     @memoized

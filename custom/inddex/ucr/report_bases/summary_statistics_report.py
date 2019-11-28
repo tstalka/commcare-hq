@@ -1,6 +1,5 @@
-from custom.inddex.filters import AgeRangeFilter, GenderFilter, SettlementAreaFilter, BreastFeedingFilter
-from custom.inddex.ucr.report_bases.multi_tabular_report import MultiTabularReport
-from custom.inddex.ucr.report_bases.report_base_mixin import ReportBaseMixin
+from custom.inddex.ucr.report_bases.mixins import ReportBaseMixin
+from custom.inddex.utils import MultiTabularReport
 
 
 class SummaryStatisticsReportBase(ReportBaseMixin, MultiTabularReport):
@@ -10,10 +9,20 @@ class SummaryStatisticsReportBase(ReportBaseMixin, MultiTabularReport):
 
     @property
     def fields(self):
-        return self.get_base_fields()
+        fields = super(SummaryStatisticsReportBase, self).fields
+        fields += self.get_base_fields()
+
+        return fields
 
     @property
     def report_config(self):
-        return self.get_base_report_config(self)
+        report_config = super(SummaryStatisticsReportBase, self).report_config
+        report_config.update(self.get_base_report_config(self))
+
+        return report_config
+
+    @property
+    def data_providers(self):
+        raise super(SummaryStatisticsReportBase, self).data_providers
 
 
