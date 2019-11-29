@@ -21,7 +21,7 @@
     {% if report %}
         <br/>
         <h2 class="media-heading" style="text-align: center">{{ report.report_table.title }}<br/><small>{{ report.report_table.comment }}</small><br/></h2>
-        {% include 'yeksi_naa/partials/report_table.html' with report_table=report.report_table charts=charts %}
+        {% include 'yeksi_naa/partials/report_table.html' with report_table=report.report_table %}
         <br/>
     {% endif %}
 {% endif %}
@@ -38,10 +38,5 @@
             </div>
         </div>
     </script>
-  {% for chart in charts %}
-    {% with id=forloop.counter|stringformat:"s" slug=report.slug %}
-      {% include chart.template_partial with chart=chart chart_id='chart_'|add:slug|add:'_'|add:id %}
-    {% endwith %}
-  {% endfor %}
 {% endblock js-inline %}
 

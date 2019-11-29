@@ -30,12 +30,12 @@
     {% include 'reports/partials/description.html' %}
 {% else %}
     {% if export_only %}
-        <h2><i>{% blocktrans %}This report is available only for export{% endblocktrans %}</i></h2>
+      <h2>{% blocktrans %}This report is available <i><b>only for export</b></i>{% endblocktrans %}</h2>
     {% else %}
         {% for thisreport in reports %}
           <br/>
           <h4 class="media-heading">{{ thisreport.report_table.title }}<br/><small>{{ subtitle1 }}</small><br/><small>{{ subtitle2 }}</small></h4>
-          {% include 'inddex/partials/report_table.html' with report_table=thisreport.report_table charts=thisreport.charts chart_span=thisreport.chart_span%}
+          {% include 'inddex/partials/report_table.html' with report_table=thisreport.report_table %}
           <br/>
         {% endfor %}
     {% endif %}
@@ -53,11 +53,4 @@
             </div>
         </div>
     </script>
-    {% for thisreport in reports %}
-        {% for chart in thisreport.charts %}
-            {% with id1=forloop.counter|stringformat:"s" id2=forloop.parentloop.counter|stringformat:"s" slug=report.slug %}
-                {% include chart.template_partial with chart=chart chart_id='chart_'|add:slug|add:'_'|add:id2|add:id1 %}
-            {% endwith %}
-        {% endfor %}
-    {% endfor %}
 {% endblock %}
