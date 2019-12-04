@@ -8,6 +8,10 @@ class ParticipantConsumptionReportData(SqlData):
     slug = 'participant_consumption_report_data'
 
     @property
+    def engine_id(self):
+        return 'ucr'
+
+    @property
     def headers(self):
         return DataTablesHeader(
             DataTablesColumn('Gender'),

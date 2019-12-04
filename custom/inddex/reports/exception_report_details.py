@@ -1,23 +1,19 @@
-from memoized import memoized
-
-from custom.inddex.filters import FoodCodeFilter
+from custom.inddex.filters import FoodCodeFilter, ExceptionDescriptionFilter
 from custom.inddex.ucr.data_providers.exceptions_report_data import ExceptionReportDetailsData
 from custom.inddex.ucr.report_bases.exceptions_report import ExceptionReportBase
-from custom.inddex.utils import SingleTableReport
 
 
-class ExceptionDetailsReport(ExceptionReportBase, SingleTableReport):
+class ExceptionDetailsReport(ExceptionReportBase):
     title = 'Exception Details Report'
     name = title
     slug = 'exception_details_report'
-    default_rows = 10
-    exportable = True
     
     @property
     def fields(self):
         fields = super(ExceptionDetailsReport, self).fields
-        if FoodCodeFilter not in fields:
-            fields.insert(1, FoodCodeFilter)
+        for field in [FoodCodeFilter, ExceptionDescriptionFilter]:
+            if field not in fields:
+                fields.insert(1, field)
         
         return fields
 

@@ -3,14 +3,15 @@
         "inddex-reports"
     ],
     "server_environment": [
-        "production"
+        "production",
+        "localdev"
     ],
     "config": {
         "engine_id": "default",
         "referenced_doc_type": "CommCareCase",
-        "table_id": "food-consumption-indicators",
+        "table_id": "food_consumption_indicators",
         "description": "",
-        "display_name": "Food Consumption Test",
+        "display_name": "Food Consumption",
         "configured_filter": {
             "type": "boolean_expression",
             "operator": "eq",

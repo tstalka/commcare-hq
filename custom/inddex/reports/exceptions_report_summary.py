@@ -1,4 +1,4 @@
-from custom.inddex.filters import FoodBaseTermFilter
+from custom.inddex.filters import FoodBaseTermFilter, ExceptionTypeFilter
 from custom.inddex.ucr.data_providers.exceptions_report_data import ExceptionReportSummaryData
 from custom.inddex.ucr.report_bases.exceptions_report import ExceptionReportBase
 
@@ -11,8 +11,9 @@ class ExceptionSummaryReport(ExceptionReportBase):
     @property
     def fields(self):
         fields = super(ExceptionSummaryReport, self).fields
-        if FoodBaseTermFilter not in fields:
-            fields.insert(1, FoodBaseTermFilter)
+        for field in [FoodBaseTermFilter, ExceptionTypeFilter]:
+            if field not in fields:
+                fields.insert(1, field)
 
         return fields
 

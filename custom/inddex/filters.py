@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _
 
 from corehq.apps.reports.filters.base import BaseSingleOptionFilter, BaseMultipleOptionFilter
+from custom.inddex.sqldata import FoodCodeData, FoodBaseTermData
 
 
 class AgeRangeFilter(BaseSingleOptionFilter):
@@ -117,10 +118,32 @@ class ExceptionDescriptionFilter(BaseSingleOptionFilter):
     default_text = _('All')
 
     @property
+    def exceptions_descriptions(self):
+        return [
+            ('missing', _('Error: Ingredient(s) are missing FCT info')),
+            ('no_conversion', _('Error: No conversion factor available')),
+            ('no_fct', _('Error: No FCT info available')),
+            ('using_conversion', _('Info: Using conversion factor from the parent_food_code')),
+            ('using_fct', _('Info: Using FCT from the parent_food_code'))
+        ]
+
+    @property
     def options(self):
         return [
-            ('Description 1', 'Description 1'),
-            ('Description 2', 'Description 2')
+            x for x in self.exceptions_descriptions
+        ]
+
+
+class ExceptionTypeFilter(BaseSingleOptionFilter):
+    slug = 'exception_type'
+    label = _('Exception type')
+    default_text = _('All')
+
+    @property
+    def options(self):
+        return [
+            ('error', _('Error')),
+            ('info', _('Info'))
         ]
 
 
@@ -130,23 +153,29 @@ class FoodCodeFilter(BaseSingleOptionFilter):
     default_text = _('All')
 
     @property
+    def food_codes(self):
+        return FoodCodeData(config={'domain': self.domain}).rows
+
+    @property
     def options(self):
         return [
-            ('Food Code 1', 'Food Code 1'),
-            ('Food Code 2', 'Food Code 2')
+            (str(x), str(x)) for x in self.food_codes
         ]
 
 
 class FoodBaseTermFilter(BaseSingleOptionFilter):
     slug = 'food_base_term'
-    label = _('Food Base Term')
+    label = _('Food base term')
     default_text = _('All')
+
+    @property
+    def food_base_terms(self):
+        return FoodBaseTermData(config={'domain': self.domain}).rows
 
     @property
     def options(self):
         return [
-            ('Food Base Term 1', 'Food Base Term 1'),
-            ('Food Base Term 2', 'Food Base Term 2')
+            (x, _(x)) for x in self.food_base_terms
         ]
 
 
@@ -156,8 +185,13 @@ class FoodTypeFilter(BaseSingleOptionFilter):
     default_text = _('All')
 
     @property
+    def food_types(self):
+        return [
+            'food_item', 'non_std_food_item', 'non_std_recipe', 'std_recipe'
+        ]
+
+    @property
     def options(self):
         return [
-            ('Food type 1', 'Food type 1'),
-            ('Food type 2', 'Food type 2')
+            (x, x) for x in self.food_types
         ]

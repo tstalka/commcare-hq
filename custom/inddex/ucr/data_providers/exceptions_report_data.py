@@ -10,6 +10,10 @@ class ExceptionReportDetailsData(SqlData):
     slug = 'exception_report_details'
 
     @property
+    def engine_id(self):
+        return 'ucr'
+
+    @property
     def headers(self):
         return DataTablesHeader(
                     DataTablesColumn('Exception type'),
@@ -37,6 +41,10 @@ class ExceptionReportSummaryData(SqlData):
     total_row = None
     title = 'Exception Report Summary'
     slug = 'exception_report_summary'
+
+    @property
+    def engine_id(self):
+        return 'ucr'
 
     @property
     def headers(self):

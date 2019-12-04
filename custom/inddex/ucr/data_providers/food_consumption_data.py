@@ -8,6 +8,10 @@ class DetailedFoodConsumptionData(SqlData):
     slug = 'detailed_food_consumption_data'
 
     @property
+    def engine_id(self):
+        return 'ucr'
+
+    @property
     def headers(self):
         return DataTablesHeader(
                     DataTablesColumn('Food'),
@@ -29,6 +33,10 @@ class FoodConsumptionData(SqlData):
     total_row = None
     title = 'Food Consumption Data'
     slug = 'food_consumption_data'
+
+    @property
+    def engine_id(self):
+        return 'ucr'
 
     @property
     def headers(self):

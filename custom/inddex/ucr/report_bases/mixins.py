@@ -92,7 +92,6 @@ class ExceptionReportBaseMixin(BaseMixin):
     @staticmethod
     def get_base_fields():
         return [
-            ExceptionDescriptionFilter,
             FoodTypeFilter,
         ]
 

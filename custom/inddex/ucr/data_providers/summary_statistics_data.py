@@ -7,6 +7,10 @@ class SummaryStatsNutrientDataProvider(SqlData):
     title = 'Summary stats per nutrient for total sample'
     slug = 'summary_statistics_report_nutrient'
 
+    @property
+    def engine_id(self):
+        return 'ucr'
+
     headers = DataTablesHeader(
                 DataTablesColumn('Nutrient'),
                 DataTablesColumn('Mean'),
@@ -29,6 +33,10 @@ class SummaryStatsRespondentDataProvider(SqlData):
     total_row = None
     title = 'Summary stats per nutrient per respondent'
     slug = 'summary_statistics_report_respondent'
+
+    @property
+    def engine_id(self):
+        return 'ucr'
 
     headers = DataTablesHeader(
                 DataTablesColumn('Respondent'),
