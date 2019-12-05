@@ -44,6 +44,8 @@ class DetailedFoodConsumptionData(SqlData):
             DatabaseColumn('already_reported_food', SimpleColumn('already_reported_food')),
             DatabaseColumn('already_reported_food_caseid', SimpleColumn('already_reported_food_caseid')),
             DatabaseColumn('is_ingredient', SimpleColumn('is_ingredient')),
+            DatabaseColumn('ingr_recipe_case_id', SimpleColumn('ingr_recipe_case_id')),
+            DatabaseColumn('ingr_recipe_code', SimpleColumn('ingr_recipe_code')),
             DatabaseColumn('short_name', SimpleColumn('short_name')),
             DatabaseColumn('food_name', SimpleColumn('food_name')),
             DatabaseColumn('recipe_name', SimpleColumn('recipe_name')),
@@ -103,6 +105,8 @@ class DetailedFoodConsumptionData(SqlData):
                     DataTablesColumn('already_reported_food'),
                     DataTablesColumn('already_reported_food_case_id'),
                     DataTablesColumn('is_ingredient'),
+                    DataTablesColumn('ingr_recipe_case_id'),
+                    DataTablesColumn('ingr_recipe_code'),
                     DataTablesColumn('short_name'),
                     DataTablesColumn('food_name'),
                     DataTablesColumn('recipe_name'),
@@ -142,11 +146,12 @@ class DetailedFoodConsumptionData(SqlData):
                 'gender', 'age', 'supplements', 'urban_rural', 'pregnant', 'breastfeeding', 'food_code',
                 'reference_food_code', 'food_type', 'include_in_analysis', 'food_status', 'eating_time',
                 'date', 'eating_occasion', 'already_reported_food', 'already_reported_food_caseid',
-                'is_ingredient', 'short_name', 'food_name', 'recipe_name', 'food_base_term', 'tag_1', 'other_tag_1',
-                'tag_2', 'other_tag_2', 'tag_3', 'other_tag_3', 'tag_4', 'other_tag_4', 'tag_5', 'other_tag_5',
-                'tag_6', 'other_tag_6', 'tag_7', 'other_tag_7', 'tag_8', 'other_tag_8', 'tag_9', 'other_tag_9',
-                'tag_10', 'other_tag_10', 'conv_method', 'conv_method_desc', 'conv_option', 'conv_option_desc',
-                'conv_size', 'conv_units', 'quantity']
+                'is_ingredient', 'ingr_recipe_case_id', 'ingr_recipe_code', 'short_name', 'food_name',
+                'recipe_name', 'food_base_term', 'tag_1', 'other_tag_1', 'tag_2', 'other_tag_2', 'tag_3',
+                'other_tag_3', 'tag_4', 'other_tag_4', 'tag_5', 'other_tag_5', 'tag_6', 'other_tag_6',
+                'tag_7', 'other_tag_7', 'tag_8', 'other_tag_8', 'tag_9', 'other_tag_9', 'tag_10', 'other_tag_10',
+                'conv_method', 'conv_method_desc', 'conv_option', 'conv_option_desc', 'conv_size', 'conv_units',
+                'quantity']
 
     @property
     def filters(self):
@@ -157,9 +162,7 @@ class DetailedFoodConsumptionData(SqlData):
         result = []
         data_rows = self.get_data()
         group_columns = tuple(self.group_by)
-        print('START')
-        print(group_columns)
-        print(data_rows)
+
         for row in data_rows:
             result.append([row[x] for x in group_columns])
         return result
