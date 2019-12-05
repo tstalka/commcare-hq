@@ -5,8 +5,8 @@ class FoodConsumptionReportBase(MultiTabularReport):
     title = 'Food Consumption Report'
     name = f'{title}s'
     slug = 'food_consumption_report'
-    export_only = True
-    show_filters = False
+    export_only = False
+    show_filters = True
 
     @property
     def report_context(self):
