@@ -3,6 +3,7 @@ from sqlagg.columns import SimpleColumn
 from corehq.apps.reports.datatables import DataTablesHeader, DataTablesColumn
 from corehq.apps.reports.sqlreport import SqlData, DatabaseColumn
 from corehq.apps.userreports.util import get_table_name
+from custom.inddex.couchdata import CouchData
 
 FOOD_CONSUMPTION = 'food_consumption_indicators'
 
@@ -59,7 +60,8 @@ class FoodCodeData(FoodCodeDataSource):
     @property
     def rows(self):
         food_codes = [int(x['food_code']) for x in self.get_data() if x['food_code'] is not None]
-        return sorted(food_codes)
+
+        return sorted(set(food_codes))
 
 
 class FoodBaseTermDataSource(FoodConsumptionDataSourceMixin):
@@ -88,4 +90,5 @@ class FoodBaseTermData(FoodBaseTermDataSource):
     @property
     def rows(self):
         food_base_terms = [x['food_base_term'] for x in self.get_data() if x['food_base_term'] is not None]
-        return sorted(food_base_terms)
+
+        return sorted(set(food_base_terms))
