@@ -66,26 +66,6 @@
             },
             {
                 "type": "expression",
-                "column_id": "respondent_id",
-                "datatype": "string",
-                "display_name": "Respondent Unique Id",
-                "expression": {
-                    "type": "nested",
-                    "argument_expression": {
-                        "type": "indexed_case",
-                        "case_expression": {
-                            "type": "identity"
-                        },
-                        "index": "parent"
-                    },
-                    "value_expression": {
-                        "type": "property_name",
-                        "property_name": "respondent_id"
-                    }
-                }
-            },
-            {
-                "type": "expression",
                 "column_id": "owner_name",
                 "datatype": "string",
                 "display_name": "Owner",
@@ -112,6 +92,26 @@
                 "transform": {
                     "type": "custom",
                     "custom_type": "owner_display"
+                }
+            },
+            {
+                "type": "expression",
+                "column_id": "respondent_unique_id",
+                "datatype": "string",
+                "display_name": "Respondent Unique Id",
+                "expression": {
+                    "type": "nested",
+                    "argument_expression": {
+                        "type": "indexed_case",
+                        "case_expression": {
+                            "type": "identity"
+                        },
+                        "index": "parent"
+                    },
+                    "value_expression": {
+                        "type": "property_name",
+                        "property_name": "respondent_unique_id"
+                    }
                 }
             },
             {
@@ -248,12 +248,31 @@
             },
             {
                 "type": "expression",
+                "column_id": "reference_food_code",
+                "datatype": "string",
+                "display_name": "Reference Food Code",
+                "expression": {
+                    "type": "property_name",
+                    "property_name": "parent_food_code"
+                }
+            },
+            {
+                "type": "expression",
                 "column_id": "food_type",
                 "datatype": "string",
                 "display_name": "Food Type",
                 "expression": {
                     "type": "property_name",
                     "property_name": "food_type"
+                }
+            },
+            {
+                "type": "expression",
+                "column_id": "include_in_analysis",
+                "datatype": "string",
+                "expression": {
+                    "type": "named",
+                    "name": "include_in_analysis"
                 }
             },
             {
@@ -292,7 +311,7 @@
                     },
                     "value_expression": {
                         "type": "property_name",
-                        "property_name": "recall_date"
+                        "property_name": "visit_date"
                     }
                 }
             },
@@ -338,12 +357,59 @@
             },
             {
                 "type": "expression",
+                "column_id": "ingr_recipe_case_id",
+                "datatype": "string",
+                "display_name": "Ingr Recipe Case Id",
+                "expression": {
+                    "type": "property_name",
+                    "property_name": "recipe_case_id"
+                }
+            },
+            {
+                "column_id": "ingr_recipe_code",
+                "type": "expression",
+                "datatype": "string",
+                "display_name": "Ingr Recipe Code",
+                "expression": {
+                    "type": "related_doc",
+                    "related_doc_type": "CommCareCase",
+                    "doc_id_expression": {
+                        "type": "property_name",
+                        "property_name": "recipe_case_id"
+                    },
+                    "value_expression": {
+                        "type": "property_name",
+                        "property_name": "food_code"
+                    }
+                }
+            },
+            {
+                "type": "expression",
                 "column_id": "short_name",
                 "datatype": "string",
                 "display_name": "Short Name",
                 "expression": {
                     "type": "property_name",
                     "property_name": "short_name"
+                }
+            },
+            {
+                "type": "expression",
+                "column_id": "food_name",
+                "datatype": "string",
+                "display_name": "Food Name",
+                "expression": {
+                    "type": "property_name",
+                    "property_name": "name"
+                }
+            },
+            {
+                "type": "expression",
+                "column_id": "recipe_name",
+                "datatype": "string",
+                "expression": {
+                    "type": "named",
+                    "name": "recipe_name"
                 }
             },
             {
@@ -627,7 +693,39 @@
             }
         ],
         "base_item_expression": {},
-        "named_expressions": {},
+        "named_expressions": {
+            "include_in_analysis": {
+                "type": "conditional",
+                "test": {
+                    "type": "boolean_expression",
+                    "expression": {
+                        "type": "property_name",
+                        "property_name": "food_type"
+                    },
+                    "operator": "not_eq",
+                    "property_value": "non_std_recipe"
+                },
+                "expression_if_true": "Yes",
+                "expression_if_false": "No"
+            },
+            "recipe_name": {
+                "type": "conditional",
+                "test": {
+                    "type": "boolean_expression",
+                    "expression": {
+                        "type": "property_name",
+                        "property_name": "food_type"
+                    },
+                    "operator": "in",
+                    "property_value": ["non_std_recipe", "std_recipe"]
+                },
+                "expression_if_true": {
+                    "type": "property_name",
+                    "property_name": "name"
+                },
+                "expression_if_false": ""
+            }
+        },
         "named_filters": {}
     }
 }
