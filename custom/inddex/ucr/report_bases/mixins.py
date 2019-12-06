@@ -1,7 +1,10 @@
+import datetime
+
 from corehq.apps.reports.standard import DatespanMixin
 from custom.inddex.filters import ExceptionDescriptionFilter, FoodTypeFilter, AgeRangeFilter, GenderFilter, \
     SettlementAreaFilter, BreastFeedingFilter
 from custom.intrahealth.filters import DateRangeFilter
+from dimagi.utils.dates import force_to_date
 
 
 class ReportMixin(DatespanMixin):
@@ -13,20 +16,25 @@ class ReportMixin(DatespanMixin):
 
     @property
     def report_config(self):
+
         return {
             'domain': self.domain,
-            'startdate': self.startdate,
-            'enddate': self.enddate,
+            'startdate': self.start_date,
+            'enddate': self.end_date,
             # 'selected_location': self.selected_location
         }
 
     @property
-    def startdate(self):
-        return self.request.datespan.startdate
+    def start_date(self):
+        start_date = self.request.GET.get('startdate')
+
+        return start_date if start_date else str(datetime.datetime.now().date())
 
     @property
-    def enddate(self):
-        return self.request.datespan.end_of_end_day
+    def end_date(self):
+        end_date = self.request.GET.get('end_date')
+
+        return end_date if end_date else str(datetime.datetime.now().date())
 
     # @property
     # def selected_location(self):
