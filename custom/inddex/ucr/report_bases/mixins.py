@@ -2,7 +2,7 @@ import datetime
 
 from corehq.apps.reports.standard import DatespanMixin
 from custom.inddex.filters import ExceptionDescriptionFilter, FoodTypeFilter, AgeRangeFilter, GenderFilter, \
-    SettlementAreaFilter, BreastFeedingFilter
+    SettlementAreaFilter, BreastFeedingFilter, PregnancyFilter, RecallStatusFilter
 from custom.intrahealth.filters import DateRangeFilter
 from dimagi.utils.dates import force_to_date
 
@@ -72,8 +72,8 @@ class ReportBaseMixin(BaseMixin):
         return {
             'age_range': obj.age_range,
             'gender': obj.gender,
-            'settlement': obj.settlement,
-            'breast_feeding': obj.breast_feeding,
+            'urban_rural': obj.urban_rural,
+            'breastfeeding': obj.breastfeeding,
         }
 
     @property
@@ -87,12 +87,49 @@ class ReportBaseMixin(BaseMixin):
         return self.request.GET.get('gender') or ''
 
     @property
-    def settlement(self):
-        return self.request.GET.get('settlement') or ''
+    def urban_rural(self):
+        return self.request.GET.get('urban_rural') or ''
 
     @property
-    def breast_feeding(self):
-        return self.request.GET.get('breast_feeding') or ''
+    def breastfeeding(self):
+        return self.request.GET.get('breastfeeding') or ''
+
+
+class NutrientIntakesBaseMixin(ReportBaseMixin):
+
+    @staticmethod
+    def get_base_fields():
+        # TODO Age range filters and FAO/WHO GIFT
+        return [
+            GenderFilter,
+            PregnancyFilter,
+            BreastFeedingFilter,
+            SettlementAreaFilter,
+            RecallStatusFilter
+        ]
+
+    @staticmethod
+    def get_base_report_config(obj):
+        return {
+            'gender': obj.gender,
+            'pregnant': obj.pregnant,
+            'breastfeeding': obj.breastfeeding,
+            'urban_rural': obj.urban_rural,
+            'supplements': obj.supplements,
+            'recall_status': obj.recall_status
+        }
+
+    @property
+    def pregnant(self):
+        return self.request.GET.get('pregnant') or ''
+
+    @property
+    def supplements(self):
+        return self.request.GET.get('supplements') or ''
+
+    @property
+    def recall_status(self):
+        return self.request.GET.get('recall_status') or ''
 
 
 class ExceptionReportBaseMixin(BaseMixin):

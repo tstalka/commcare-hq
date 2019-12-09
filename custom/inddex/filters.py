@@ -65,10 +65,24 @@ class GenderFilter(BaseSingleOptionFilter):
             ('female', _('Female'))
         ]
 
+class PregnancyFilter(BaseSingleOptionFilter):
+    slug = 'pregnant'
+    label = _('Pregnancy')
+    default_text = _('All')
+
+    @property
+    def options(self):
+        return [
+            ('yes', _('Yes')),
+            ('no', _('No')),
+            ('refuse_to_answer', _('Refuse to answer')),
+            ('dont_know', _('Don\'t know'))
+        ]
+
 
 class SettlementAreaFilter(BaseSingleOptionFilter):
-    slug = 'settlement'
-    label = _('Settlement')
+    slug = 'urban_rural'
+    label = _('Urban/Rural')
     default_text = _('All')
 
     @property
@@ -80,8 +94,23 @@ class SettlementAreaFilter(BaseSingleOptionFilter):
 
 
 class BreastFeedingFilter(BaseSingleOptionFilter):
-    slug = 'breast_feeding'
-    label = _('Breast Feeding?')
+    slug = 'breastfeeding'
+    label = _('Breastfeeding')
+    default_text = _('All')
+
+    @property
+    def options(self):
+        # TODO: Check value in production apllication ?? refuse_de_rpondre
+        return [
+            ('yes', _('Yes')),
+            ('no', _('No')),
+            ('refuse_de_rpondre', _('Refuse to answer'))
+        ]
+
+
+class SupplementsFilter(BaseSingleOptionFilter):
+    slug = 'supplements'
+    label = _('Supplement Use')
     default_text = _('All')
 
     @property
@@ -92,23 +121,16 @@ class BreastFeedingFilter(BaseSingleOptionFilter):
         ]
 
 
-class SupplementsFilter(BaseMultipleOptionFilter):
-    slug = 'supplements'
-    label = _('Supplements')
+class RecallStatusFilter(BaseSingleOptionFilter):
+    slug = 'recall_status'
+    label = _('Recall Status')
     default_text = _('All')
-
-    default_options = [
-        'Supplement 1',
-        'Supplement 2',
-        'Supplement 3',
-        'Supplement 4',
-        'Supplement 5',
-    ]
 
     @property
     def options(self):
         return [
-            (option.lower(), _(option)) for option in self.default_options
+            ('Open', _('Open')),
+            ('Completed', _('Completed'))
         ]
 
 
