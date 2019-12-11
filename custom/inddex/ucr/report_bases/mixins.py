@@ -20,8 +20,7 @@ class ReportMixin(DatespanMixin):
         return {
             'domain': self.domain,
             'startdate': self.start_date,
-            'enddate': self.end_date,
-            # 'selected_location': self.selected_location
+            'enddate': self.end_date
         }
 
     @property
@@ -35,13 +34,6 @@ class ReportMixin(DatespanMixin):
         end_date = self.request.GET.get('end_date')
 
         return end_date if end_date else str(datetime.datetime.now().date())
-
-    # @property
-    # def selected_location(self):
-    #     try:
-    #         return SQLLocation.objects.get(location_id=self.request.GET.get('location_id'))
-    #     except SQLLocation.DoesNotExist:
-    #         return None
 
 
 class BaseMixin:
@@ -78,8 +70,8 @@ class ReportBaseMixin(BaseMixin):
 
     @property
     def age_range(self):
-        age_from = self.request.GET.get('age_from')
-        age_to = self.request.GET.get('age_to')
+        age_from = self.request.GET.get('age_range_from')
+        age_to = self.request.GET.get('age_range_to')
         return age_from, age_to
 
     @property

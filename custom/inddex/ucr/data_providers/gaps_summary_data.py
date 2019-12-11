@@ -1,22 +1,20 @@
 from corehq.apps.reports.datatables import DataTablesColumn, DataTablesHeader
 from corehq.apps.reports.sqlreport import SqlData, DatabaseColumn
 from sqlagg.columns import SimpleColumn
-from sqlagg.filters import EQ
 
 from corehq.apps.userreports.util import get_table_name
 from custom.inddex.sqldata import FOOD_CONSUMPTION
 
 
-class NutrientIntakesByFoodData(SqlData):
+class GapsSummaryMasterOutputData(SqlData):
     total_row = None
-    title = 'Nutrient Intakes By Food'
-    slug = 'nutrient_intake_by_food_data'
+    title = 'Master Output'
+    slug = 'master_output'
     filters_config = None
 
-    def __init__(self, config, filters_config):
-        super(NutrientIntakesByFoodData, self).__init__()
+    def __init__(self, config):
+        super(GapsSummaryMasterOutputData, self).__init__()
         self.config = config
-        self.filters_config = filters_config
 
     @property
     def table_name(self):
@@ -88,7 +86,7 @@ class NutrientIntakesByFoodData(SqlData):
 
     @property
     def headers(self):
-        # to add respondent_unique_id reference_food_code include_in_analysis date
+        # TODO: we can try skip it!
         return DataTablesHeader(
                     DataTablesColumn('food_case_id'),
                     DataTablesColumn('respondent_case_id'),
@@ -163,23 +161,7 @@ class NutrientIntakesByFoodData(SqlData):
     @property
     def filters(self):
         filters = []
-        if self.filters_config['gender']:
-            filters.append(EQ('gender', 'gender'))
-        if self.filters_config['pregnant']:
-            filters.append(EQ('pregnant', 'pregnant'))
-        if self.filters_config['breastfeeding']:
-            filters.append(EQ('breastfeeding', 'breastfeeding'))
-        if self.filters_config['urban_rural']:
-            filters.append(EQ('urban_rural', 'urban_rural'))
-        if self.filters_config['supplements']:
-            filters.append(EQ('supplements', 'supplements'))
-        if self.filters_config['recall_status']:
-            filters.append(EQ('recall_status', 'recall_status'))
         return filters
-
-    @property
-    def filter_values(self):
-        return self.filters_config
 
     @property
     def rows(self):
@@ -191,10 +173,11 @@ class NutrientIntakesByFoodData(SqlData):
             result.append([row[x] for x in group_columns])
         return result
 
-class NutrientIntakesByRespondentData(SqlData):
+
+class ConvFactorGapsSummaryData(SqlData):
     total_row = None
-    title = 'Nutrient Intakes By Respondent'
-    slug = 'nutrient_intakes_by_respondent'
+    title = 'Conv Factor Gaps Summary by Food Type'
+    slug = 'conv_factor_gaps_summary_by_food_type'
 
     @property
     def engine_id(self):
@@ -203,25 +186,26 @@ class NutrientIntakesByRespondentData(SqlData):
     @property
     def headers(self):
         return DataTablesHeader(
-                    DataTablesColumn('Detailed'),
-                    DataTablesColumn('Food'),
-                    DataTablesColumn('Calories'),
-                    DataTablesColumn('Water'),
-                )
+            DataTablesColumn('Gender'),
+            DataTablesColumn('Settlement'),
+            DataTablesColumn('Breast feeding'),
+            DataTablesColumn('Age'),
+        )
 
     @property
     def rows(self):
         # TODO: add proper calculations instead
         # It's worth to ensure that elements are of type DataTablesColumn instead of string
         return [
-            ['yes', 'egg', 1, 'yes'],
-            ['also yes', 'leg', 2, 'a lot']
+            ['M', 'U', 'N', 18],
+            ['W', 'S', 'Y', 23]
         ]
 
-class ParticipantConsumptionReportData(SqlData):
+
+class FCTGapsSummaryData(SqlData):
     total_row = None
-    title = 'Participant Consumption Report Data'
-    slug = 'participant_consumption_report_data'
+    title = 'FCT Gaps Summary by Food Type'
+    slug = 'fct_gaps_summary_by_food_type'
 
     @property
     def engine_id(self):
