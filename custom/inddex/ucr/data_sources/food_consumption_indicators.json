@@ -96,6 +96,26 @@
             },
             {
                 "type": "expression",
+                "column_id": "recall_status",
+                "datatype": "string",
+                "display_name": "Recall Status",
+                "expression": {
+                    "type": "nested",
+                    "argument_expression": {
+                        "type": "indexed_case",
+                        "case_expression": {
+                            "type": "identity"
+                        },
+                        "index": "parent"
+                    },
+                    "value_expression": {
+                        "type": "property_name",
+                        "property_name": "recall_status"
+                    }
+                }
+            },
+            {
+                "type": "expression",
                 "column_id": "respondent_unique_id",
                 "datatype": "string",
                 "display_name": "Respondent Unique Id",

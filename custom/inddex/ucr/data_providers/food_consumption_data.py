@@ -1,15 +1,22 @@
 from corehq.apps.reports.datatables import DataTablesColumn, DataTablesHeader
 from corehq.apps.reports.sqlreport import SqlData, DatabaseColumn
 from sqlagg.columns import SimpleColumn
+from sqlagg.filters import EQ
 
 from corehq.apps.userreports.util import get_table_name
 from custom.inddex.sqldata import FOOD_CONSUMPTION
 
 
-class DetailedFoodConsumptionData(SqlData):
+class NutrientIntakesByFoodData(SqlData):
     total_row = None
-    title = 'Detailed Food Consumption Data'
-    slug = 'detailed_food_consumption_data'
+    title = 'Nutrient Intakes By Food'
+    slug = 'nutrient_intake_by_food_data'
+    filters_config = None
+
+    def __init__(self, config, filters_config):
+        super(NutrientIntakesByFoodData, self).__init__()
+        self.config = config
+        self.filters_config = filters_config
 
     @property
     def table_name(self):
@@ -155,7 +162,24 @@ class DetailedFoodConsumptionData(SqlData):
 
     @property
     def filters(self):
-        return []
+        filters = []
+        if self.filters_config['gender']:
+            filters.append(EQ('gender', 'gender'))
+        if self.filters_config['pregnant']:
+            filters.append(EQ('pregnant', 'pregnant'))
+        if self.filters_config['breastfeeding']:
+            filters.append(EQ('breastfeeding', 'breastfeeding'))
+        if self.filters_config['urban_rural']:
+            filters.append(EQ('urban_rural', 'urban_rural'))
+        if self.filters_config['supplements']:
+            filters.append(EQ('supplements', 'supplements'))
+        if self.filters_config['recall_status']:
+            filters.append(EQ('recall_status', 'recall_status'))
+        return filters
+
+    @property
+    def filter_values(self):
+        return self.filters_config
 
     @property
     def rows(self):
@@ -167,10 +191,10 @@ class DetailedFoodConsumptionData(SqlData):
             result.append([row[x] for x in group_columns])
         return result
 
-class FoodConsumptionData(SqlData):
+class NutrientIntakesByRespondentData(SqlData):
     total_row = None
-    title = 'Food Consumption Data'
-    slug = 'food_consumption_data'
+    title = 'Nutrient Intakes By Respondent'
+    slug = 'nutrient_intakes_by_respondent'
 
     @property
     def engine_id(self):
