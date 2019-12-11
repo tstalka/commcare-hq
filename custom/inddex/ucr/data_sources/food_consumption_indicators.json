@@ -60,9 +60,9 @@
                         "datatype": null
                     }
                 },
-                "column_id": "respondent_case_id",
+                "column_id": "recall_case_id",
                 "datatype": "string",
-                "display_name": "respondent_case_id"
+                "display_name": "recall_case_id"
             },
             {
                 "type": "expression",
@@ -98,7 +98,7 @@
                 "type": "expression",
                 "column_id": "recall_status",
                 "datatype": "string",
-                "display_name": "Recall Status",
+                "display_name": "recall_status",
                 "expression": {
                     "type": "nested",
                     "argument_expression": {
@@ -116,9 +116,9 @@
             },
             {
                 "type": "expression",
-                "column_id": "respondent_unique_id",
+                "column_id": "unique_respondent_id",
                 "datatype": "string",
-                "display_name": "Respondent Unique Id",
+                "display_name": "Unique Respondent Id",
                 "expression": {
                     "type": "nested",
                     "argument_expression": {
@@ -307,19 +307,9 @@
             },
             {
                 "type": "expression",
-                "column_id": "eating_time",
+                "column_id": "recall_date",
                 "datatype": "string",
-                "display_name": "Eating Time",
-                "expression": {
-                    "type": "property_name",
-                    "property_name": "eating_time"
-                }
-            },
-            {
-                "type": "expression",
-                "column_id": "date",
-                "datatype": "string",
-                "display_name": "Date",
+                "display_name": "recall_date",
                 "expression": {
                     "type": "nested",
                     "argument_expression": {
@@ -337,9 +327,39 @@
             },
             {
                 "type": "expression",
-                "column_id": "eating_occasion",
+                "column_id": "opened_date",
                 "datatype": "string",
-                "display_name": "Eating_Occasion",
+                "display_name": "opened_date",
+                "expression": {
+                    "type": "nested",
+                    "argument_expression": {
+                        "type": "indexed_case",
+                        "case_expression": {
+                            "type": "identity"
+                        },
+                        "index": "parent"
+                    },
+                    "value_expression": {
+                        "type": "property_name",
+                        "property_name": "opened_date"
+                    }
+                }
+            },
+            {
+                "type": "expression",
+                "column_id": "eating_time",
+                "datatype": "string",
+                "display_name": "Eating Time",
+                "expression": {
+                    "type": "property_name",
+                    "property_name": "eating_time"
+                }
+            },
+            {
+                "type": "expression",
+                "column_id": "time_block",
+                "datatype": "string",
+                "display_name": "time_block",
                 "expression": {
                     "type": "property_name",
                     "property_name": "eating_occasion"
