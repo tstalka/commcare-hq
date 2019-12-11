@@ -2,6 +2,7 @@ from custom.inddex.utils import MultiTabularReport
 
 
 class GapsSummaryByFoodTypeBase(MultiTabularReport):
+    # TODO: Processed Data Exports ???
     title = 'Gaps Report Summary by Food Type'
     name = f'{title}s'
     slug = 'gaps_report_summary_by_food_type'

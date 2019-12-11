@@ -27,31 +27,33 @@ class GapsSummaryMasterOutputData(SqlData):
     @property
     def columns(self):
         return [
-            DatabaseColumn('doc_id', SimpleColumn('doc_id')),
-            DatabaseColumn('respondent_case_id', SimpleColumn('respondent_case_id')),
+            DatabaseColumn('unique_respondent_id', SimpleColumn('unique_respondent_id')),
+            DatabaseColumn('recall_case_id', SimpleColumn('recall_case_id')),
+            DatabaseColumn('opened_date', SimpleColumn('opened_date')),
             DatabaseColumn('opened_by_username', SimpleColumn('opened_by_username')),
             DatabaseColumn('owner_name', SimpleColumn('owner_name')),
-            DatabaseColumn('respondent_unique_id', SimpleColumn('respondent_unique_id')),
+            DatabaseColumn('recall_date', SimpleColumn('recall_date')),
+            DatabaseColumn('recall_status', SimpleColumn('recall_status')),
             DatabaseColumn('gender', SimpleColumn('gender')),
-            DatabaseColumn('age', SimpleColumn('age')),
+            DatabaseColumn('age', SimpleColumn('age')),  # TODO split into age years and age months add age range
             DatabaseColumn('supplements', SimpleColumn('supplements')),
             DatabaseColumn('urban_rural', SimpleColumn('urban_rural')),
             DatabaseColumn('pregnant', SimpleColumn('pregnant')),
             DatabaseColumn('breastfeeding', SimpleColumn('breastfeeding')),
             DatabaseColumn('food_code', SimpleColumn('food_code')),
             DatabaseColumn('reference_food_code', SimpleColumn('reference_food_code')),
+            DatabaseColumn('doc_id', SimpleColumn('doc_id')),  # TODO different header name in ui and export !!! important
             DatabaseColumn('food_type', SimpleColumn('food_type')),
             DatabaseColumn('include_in_analysis', SimpleColumn('include_in_analysis')),
             DatabaseColumn('food_status', SimpleColumn('food_status')),
             DatabaseColumn('eating_time', SimpleColumn('eating_time')),
-            DatabaseColumn('date', SimpleColumn('date')),
-            DatabaseColumn('eating_occasion', SimpleColumn('eating_occasion')),
+            DatabaseColumn('time_block', SimpleColumn('time_block')),
             DatabaseColumn('already_reported_food', SimpleColumn('already_reported_food')),
             DatabaseColumn('already_reported_food_caseid', SimpleColumn('already_reported_food_caseid')),
             DatabaseColumn('is_ingredient', SimpleColumn('is_ingredient')),
             DatabaseColumn('ingr_recipe_case_id', SimpleColumn('ingr_recipe_case_id')),
             DatabaseColumn('ingr_recipe_code', SimpleColumn('ingr_recipe_code')),
-            DatabaseColumn('short_name', SimpleColumn('short_name')),
+            DatabaseColumn('short_name', SimpleColumn('short_name')),  # can be renamed in future
             DatabaseColumn('food_name', SimpleColumn('food_name')),
             DatabaseColumn('recipe_name', SimpleColumn('recipe_name')),
             DatabaseColumn('food_base_term', SimpleColumn('food_base_term')),
@@ -85,78 +87,26 @@ class GapsSummaryMasterOutputData(SqlData):
         ]
 
     @property
-    def headers(self):
-        # TODO: we can try skip it!
-        return DataTablesHeader(
-                    DataTablesColumn('food_case_id'),
-                    DataTablesColumn('respondent_case_id'),
-                    DataTablesColumn('opened_by_username'),
-                    DataTablesColumn('owner_name'),
-                    DataTablesColumn('respondent_unique_id'),
-                    DataTablesColumn('gender'),
-                    DataTablesColumn('age'),
-                    DataTablesColumn('supplements'),
-                    DataTablesColumn('urban_rural'),
-                    DataTablesColumn('pregnant'),
-                    DataTablesColumn('breastfeeding'),
-                    DataTablesColumn('food_code'),
-                    DataTablesColumn('reference_food_code'),
-                    DataTablesColumn('food_type'),
-                    DataTablesColumn('include_in_analysis'),
-                    DataTablesColumn('food_status'),
-                    DataTablesColumn('eating_time'),
-                    DataTablesColumn('date'),
-                    DataTablesColumn('eating_occasion'),
-                    DataTablesColumn('already_reported_food'),
-                    DataTablesColumn('already_reported_food_case_id'),
-                    DataTablesColumn('is_ingredient'),
-                    DataTablesColumn('ingr_recipe_case_id'),
-                    DataTablesColumn('ingr_recipe_code'),
-                    DataTablesColumn('short_name'),
-                    DataTablesColumn('food_name'),
-                    DataTablesColumn('recipe_name'),
-                    DataTablesColumn('food_base_term'),
-                    DataTablesColumn('tag_1'),
-                    DataTablesColumn('other_tag_1'),
-                    DataTablesColumn('tag_2'),
-                    DataTablesColumn('other_tag_2'),
-                    DataTablesColumn('tag_3'),
-                    DataTablesColumn('other_tag_3'),
-                    DataTablesColumn('tag_4'),
-                    DataTablesColumn('other_tag_4'),
-                    DataTablesColumn('tag_5'),
-                    DataTablesColumn('other_tag_5'),
-                    DataTablesColumn('tag_6'),
-                    DataTablesColumn('other_tag_6'),
-                    DataTablesColumn('tag_7'),
-                    DataTablesColumn('other_tag_7'),
-                    DataTablesColumn('tag_8'),
-                    DataTablesColumn('other_tag_8'),
-                    DataTablesColumn('tag_9'),
-                    DataTablesColumn('other_tag_9'),
-                    DataTablesColumn('tag_10'),
-                    DataTablesColumn('other_tag_10'),
-                    DataTablesColumn('conv_method'),
-                    DataTablesColumn('conv_method_desc'),
-                    DataTablesColumn('conv_option'),
-                    DataTablesColumn('conv_option_desc'),
-                    DataTablesColumn('conv_size'),
-                    DataTablesColumn('conv_units'),
-                    DataTablesColumn('quantity')
-                )
-
-    @property
     def group_by(self):
-        return ['doc_id', 'respondent_case_id', 'opened_by_username', 'owner_name', 'respondent_unique_id',
-                'gender', 'age', 'supplements', 'urban_rural', 'pregnant', 'breastfeeding', 'food_code',
-                'reference_food_code', 'food_type', 'include_in_analysis', 'food_status', 'eating_time',
-                'date', 'eating_occasion', 'already_reported_food', 'already_reported_food_caseid',
+        return ['unique_respondent_id', 'recall_case_id', 'opened_date', 'opened_by_username', 'owner_name',
+                'recall_date', 'recall_status', 'gender', 'age', 'supplements',  'urban_rural', 'pregnant',
+                'breastfeeding', 'food_code', 'reference_food_code', 'doc_id', 'food_type', 'include_in_analysis',
+                'food_status', 'eating_time', 'time_block', 'already_reported_food', 'already_reported_food_caseid',
                 'is_ingredient', 'ingr_recipe_case_id', 'ingr_recipe_code', 'short_name', 'food_name',
                 'recipe_name', 'food_base_term', 'tag_1', 'other_tag_1', 'tag_2', 'other_tag_2', 'tag_3',
                 'other_tag_3', 'tag_4', 'other_tag_4', 'tag_5', 'other_tag_5', 'tag_6', 'other_tag_6',
                 'tag_7', 'other_tag_7', 'tag_8', 'other_tag_8', 'tag_9', 'other_tag_9', 'tag_10', 'other_tag_10',
                 'conv_method', 'conv_method_desc', 'conv_option', 'conv_option_desc', 'conv_size', 'conv_units',
                 'quantity']
+
+
+    @property
+    def headers(self):
+        group_columns = tuple(self.group_by)
+        headers = []
+        for col in group_columns:
+            headers.append(DataTablesColumn(col))
+        return headers
 
     @property
     def filters(self):
@@ -186,10 +136,10 @@ class ConvFactorGapsSummaryData(SqlData):
     @property
     def headers(self):
         return DataTablesHeader(
-            DataTablesColumn('Gender'),
-            DataTablesColumn('Settlement'),
-            DataTablesColumn('Breast feeding'),
-            DataTablesColumn('Age'),
+            DataTablesColumn('conv_factor_gap_code'),
+            DataTablesColumn('conv_factor_gap_desc'),
+            DataTablesColumn('food_type'),
+            DataTablesColumn('conv_gap_food_type_total'),
         )
 
     @property
@@ -197,9 +147,23 @@ class ConvFactorGapsSummaryData(SqlData):
         # TODO: add proper calculations instead
         # It's worth to ensure that elements are of type DataTablesColumn instead of string
         return [
-            ['M', 'U', 'N', 18],
-            ['W', 'S', 'Y', 23]
-        ]
+                    [1,	'conv factor available', 'food_item', 600],
+                    [1, 'conv factor available', 'non_std_food', 0],
+                    [1, 'conv factor available', 'std_recipe', 300],
+                    [1, 'conv factor available', 'non_std_recipe', 0],
+                    [2, 'using conversion factor from base term food code', 'food_item', 250],
+                    [2, 'using conversion factor from base term food code', 'non_std_food', 0],
+                    [2, 'using conversion factor from base term food code', 'std_recipe', 0],
+                    [2, 'using conversion factor from base term food code', 'non_std_recipe', 0],
+                    [8, 'no conversion factor available', 'food_item', 150],
+                    [8, 'no conversion factor available', 'non_std_food', 50],
+                    [8, 'no conversion factor available', 'std_recipe', 200],
+                    [8, 'no conversion factor available', 'non_std_recipe', 65],
+                    [9, 'not applicable', 'food_item', 400],
+                    [9, 'not applicable', 'non_std_food', 0],
+                    [9, 'not applicable', 'std_recipe', 25],
+                    [9, 'not applicable', 'non_std_recipe', 0]
+            ]
 
 
 class FCTGapsSummaryData(SqlData):
@@ -214,10 +178,10 @@ class FCTGapsSummaryData(SqlData):
     @property
     def headers(self):
         return DataTablesHeader(
-            DataTablesColumn('Gender'),
-            DataTablesColumn('Settlement'),
-            DataTablesColumn('Breast feeding'),
-            DataTablesColumn('Age'),
+            DataTablesColumn('fct_gap_code'),
+            DataTablesColumn('fct_gap_desc'),
+            DataTablesColumn('food_type'),
+            DataTablesColumn('fct_gap_food_type_total'),
         )
 
     @property
@@ -225,6 +189,37 @@ class FCTGapsSummaryData(SqlData):
         # TODO: add proper calculations instead
         # It's worth to ensure that elements are of type DataTablesColumn instead of string
         return [
-            ['M', 'U', 'N', 18],
-            ['W', 'S', 'Y', 23]
-        ]
+                    [1, 'fct data available', 'food_item', 600],
+                    [1, 'fct data available', 'non_std_food', 0],
+                    [1, 'fct data available', 'std_recipe', 300],
+                    [1, 'fct data available', 'non_std_recipe', 0],
+                    [2, 'using fct data from base term food code', 'food_item', 270],
+                    [2, 'using fct data from base term food code', 'non_std_food', 0],
+                    [2, 'using fct data from base term food code', 'std_recipe', 0],
+                    [2, 'using fct data from base term food code', 'non_std_recipe', 0],
+                    [3, 'using fct data from reference food code', 'food_item', 250],
+                    [3, 'using fct data from reference food code', 'non_std_food', 0],
+                    [3, 'using fct data from reference food code', 'std_recipe', 0],
+                    [3, 'using fct data from reference food code', 'non_std_recipe', 0],
+                    [4, 'ingredient(s) using fct data from base term food code', 'food_item', 0],
+                    [4, 'ingredient(s) using fct data from base term food code', 'non_std_food', 0],
+                    [4, 'ingredient(s) using fct data from base term food code', 'std_recipe', 0],
+                    [4, 'ingredient(s) using fct data from base term food code', 'non_std_recipe', 36],
+                    [5, 'ingredient(s) using reference food code', 'food_item', 0],
+                    [5, 'ingredient(s) using reference food code', 'non_std_food', 0],
+                    [5, 'ingredient(s) using reference food code', 'std_recipe', 51],
+                    [5, 'ingredient(s) using reference food code', 'non_std_recipe', 30],
+                    [6, 'ingredient(s) not in fct', 'food_item', 0],
+                    [6, 'ingredient(s) not in fct', 'non_std_food', 0],
+                    [6, 'ingredient(s) not in fct', 'std_recipe', 0],
+                    [6, 'ingredient(s) not in fct', 'non_std_recipe', 44],
+                    [8, 'no fct data available', 'food_item', 0],
+                    [8, 'no fct data available', 'non_std_food', 50],
+                    [8, 'no fct data available', 'std_recipe', 0],
+                    [8, 'no fct data available', 'non_std_recipe', 65],
+                    [9, 'not applicable', 'food_item', 0],
+                    [9, 'not applicable', 'non_std_food', 0],
+                    [9, 'not applicable', 'std_recipe', 50],
+                    [9, 'not applicable', 'non_std_recipe', 0],
+            ]
+
