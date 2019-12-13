@@ -1,55 +1,25 @@
 from django.utils.translation import ugettext as _
 
-from corehq.apps.reports.filters.base import BaseSingleOptionFilter, BaseMultipleOptionFilter
+from corehq.apps.reports.filters.base import BaseSingleOptionFilter
 from custom.inddex.sqldata import FoodCodeData, FoodBaseTermData
 
 
 class AgeRangeFilter(BaseSingleOptionFilter):
     slug = 'age_range'
     label = _('Age range')
-    template = 'inddex/filters/age_filter.html'
     default_text = _('All')
 
     @property
     def options(self):
         return [
-            (str(k), str(k)) for k in range(0, 5)
-        ]
-
-
-class AgeMonthsFilter(BaseSingleOptionFilter):
-    slug = 'months'
-    label = _('Months')
-    default_text = '-'
-
-    @property
-    def options(self):
-        return [
-            # (str(k), str(k)) for k in range(1, 13)
-            ('1', _('January')),
-            ('2', _('February')),
-            ('3', _('March')),
-            ('4', _('April')),
-            ('5', _('May')),
-            ('6', _('June')),
-            ('7', _('July')),
-            ('8', _('August')),
-            ('9', _('September')),
-            ('10', _('October')),
-            ('11', _('November')),
-            ('12', _('December')),
-        ]
-
-
-class AgeYearsFilter(BaseSingleOptionFilter):
-    slug = 'years'
-    label = _('Years')
-    default_text = '-'
-
-    @property
-    def options(self):
-        return [
-            (str(k), str(k)) for k in range(0, 11)
+            ('0-5.9 months', _('0-5.9 months')),
+            ('06-59 months', _('06-59 months')),
+            ('5-6 years', _('5-6 years')),
+            ('7-10 years', _('7-10 years')),
+            ('11-14 years', _('11-14 years')),
+            ('15-49 years', _('15-49 years')),
+            ('50-64 years', _('50-64 years')),
+            ('65+ years', _('65+ years'))
         ]
 
 
@@ -64,6 +34,7 @@ class GenderFilter(BaseSingleOptionFilter):
             ('male', _('Male')),
             ('female', _('Female'))
         ]
+
 
 class PregnancyFilter(BaseSingleOptionFilter):
     slug = 'pregnant'
@@ -129,7 +100,7 @@ class RecallStatusFilter(BaseSingleOptionFilter):
     @property
     def options(self):
         return [
-            ('Open', _('Open')),
+            ('Open', _('Not Completed')),
             ('Completed', _('Completed'))
         ]
 

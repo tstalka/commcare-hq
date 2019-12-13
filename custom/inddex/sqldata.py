@@ -3,7 +3,6 @@ from sqlagg.columns import SimpleColumn
 from corehq.apps.reports.datatables import DataTablesHeader, DataTablesColumn
 from corehq.apps.reports.sqlreport import SqlData, DatabaseColumn
 from corehq.apps.userreports.util import get_table_name
-from custom.inddex.couchdata import CouchData
 
 FOOD_CONSUMPTION = 'food_consumption_indicators'
 
@@ -28,6 +27,8 @@ class DataSourceMixin(SqlData):
 
 
 class FoodConsumptionDataSourceMixin(DataSourceMixin):
+    total_row = None
+    filters_config = None
 
     @property
     def table_name(self):

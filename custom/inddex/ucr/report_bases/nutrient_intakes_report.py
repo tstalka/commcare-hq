@@ -2,7 +2,7 @@ from custom.inddex.utils import MultiTabularReport
 
 
 class NutrientIntakesReportBase(MultiTabularReport):
-    title = 'Nutrient Intakes by Food and by Respondent'
+    title = '2: Nutrient Intakes by Food and by Respondent'
     name = f'{title}s'
     slug = 'nutrient_intakes_by_food_and_by_respondent'
     export_only = False

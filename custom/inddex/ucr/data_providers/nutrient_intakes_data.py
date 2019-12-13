@@ -1,30 +1,18 @@
-from corehq.apps.reports.datatables import DataTablesColumn, DataTablesHeader
-from corehq.apps.reports.sqlreport import SqlData, DatabaseColumn
+from corehq.apps.reports.datatables import DataTablesColumn
+from corehq.apps.reports.sqlreport import DatabaseColumn
 from sqlagg.columns import SimpleColumn
 from sqlagg.filters import EQ
 
-from corehq.apps.userreports.util import get_table_name
-from custom.inddex.sqldata import FOOD_CONSUMPTION
+from custom.inddex.sqldata import FoodConsumptionDataSourceMixin
 
 
-class NutrientIntakesByFoodData(SqlData):
-    total_row = None
+class NutrientIntakesByFoodData(FoodConsumptionDataSourceMixin):
     title = 'Nutrient Intakes By Food'
     slug = 'nutrient_intake_by_food_data'
-    filters_config = None
 
     def __init__(self, config, filters_config):
-        super(NutrientIntakesByFoodData, self).__init__()
         self.config = config
         self.filters_config = filters_config
-
-    @property
-    def table_name(self):
-        return get_table_name(self.config['domain'], FOOD_CONSUMPTION)
-
-    @property
-    def engine_id(self):
-        return 'ucr'
 
     @property
     def columns(self):
@@ -36,14 +24,14 @@ class NutrientIntakesByFoodData(SqlData):
             DatabaseColumn('recall_date', SimpleColumn('recall_date')),
             DatabaseColumn('recall_status', SimpleColumn('recall_status')),
             DatabaseColumn('gender', SimpleColumn('gender')),
-            DatabaseColumn('age', SimpleColumn('age')),  # TODO split into age years and age months add age range
+            DatabaseColumn('age', SimpleColumn('age')),
             DatabaseColumn('supplements', SimpleColumn('supplements')),
             DatabaseColumn('urban_rural', SimpleColumn('urban_rural')),
             DatabaseColumn('pregnant', SimpleColumn('pregnant')),
             DatabaseColumn('breastfeeding', SimpleColumn('breastfeeding')),
             DatabaseColumn('food_code', SimpleColumn('food_code')),
-            DatabaseColumn('reference_food_code', SimpleColumn('reference_food_code')), # rename inmn header to parent food code???
-            DatabaseColumn('doc_id', SimpleColumn('doc_id')),  # TODO different header name in ui and export !!! important
+            DatabaseColumn('reference_food_code', SimpleColumn('reference_food_code')),
+            DatabaseColumn('doc_id', SimpleColumn('doc_id')),
             DatabaseColumn('food_name', SimpleColumn('food_name')),
             DatabaseColumn('recipe_name', SimpleColumn('recipe_name')),
             DatabaseColumn('food_type', SimpleColumn('food_type')),
@@ -99,23 +87,13 @@ class NutrientIntakesByFoodData(SqlData):
         return result
 
 
-class NutrientIntakesByRespondentData(SqlData):
-    total_row = None
+class NutrientIntakesByRespondentData(FoodConsumptionDataSourceMixin):
     title = 'Nutrient Intakes By Respondent'
     slug = 'nutrient_intakes_by_respondent'
 
     def __init__(self, config, filters_config):
-        super(NutrientIntakesByRespondentData, self).__init__()
-        self.config = config
+        super(NutrientIntakesByRespondentData, self).__init__(config)
         self.filters_config = filters_config
-
-    @property
-    def table_name(self):
-        return get_table_name(self.config['domain'], FOOD_CONSUMPTION)
-
-    @property
-    def engine_id(self):
-        return 'ucr'
 
     @property
     def columns(self):
@@ -127,7 +105,7 @@ class NutrientIntakesByRespondentData(SqlData):
             DatabaseColumn('recall_date', SimpleColumn('recall_date')),
             DatabaseColumn('recall_status', SimpleColumn('recall_status')),
             DatabaseColumn('gender', SimpleColumn('gender')),
-            DatabaseColumn('age', SimpleColumn('age')),  # TODO split into age years and age months add age range
+            DatabaseColumn('age', SimpleColumn('age')),
             DatabaseColumn('supplements', SimpleColumn('supplements')),
             DatabaseColumn('urban_rural', SimpleColumn('urban_rural')),
             DatabaseColumn('pregnant', SimpleColumn('pregnant')),
@@ -164,6 +142,10 @@ class NutrientIntakesByRespondentData(SqlData):
         if self.filters_config['recall_status']:
             filters.append(EQ('recall_status', 'recall_status'))
         return filters
+
+    @property
+    def filter_values(self):
+        return self.filters_config
 
     @property
     def rows(self):

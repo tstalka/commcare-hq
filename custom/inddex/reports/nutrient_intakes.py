@@ -1,6 +1,7 @@
 from memoized import memoized
 
-from custom.inddex.ucr.data_providers.nutrient_intakes_data import NutrientIntakesByFoodData, NutrientIntakesByRespondentData
+from custom.inddex.ucr.data_providers.nutrient_intakes_data import NutrientIntakesByFoodData, \
+    NutrientIntakesByRespondentData
 from custom.inddex.ucr.report_bases.nutrient_intakes_report import NutrientIntakesReportBase
 from custom.inddex.ucr.report_bases.mixins import NutrientIntakesBaseMixin
 

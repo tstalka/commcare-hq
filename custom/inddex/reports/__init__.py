@@ -7,9 +7,9 @@ from custom.inddex.reports.gaps_summary_by_food_type import GapsSummaryByFoodTyp
 CUSTOM_REPORTS = (
     ('Custom Reports', (
         GapsSummaryByFoodTypeReport,
-        NutrientIntakesReport,
         ExceptionDetailsReport,
         ExceptionSummaryReport,
+        NutrientIntakesReport,
         SummaryStatisticsReport
     )),
 )

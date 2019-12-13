@@ -1,10 +1,9 @@
 import datetime
 
 from corehq.apps.reports.standard import DatespanMixin
-from custom.inddex.filters import ExceptionDescriptionFilter, FoodTypeFilter, AgeRangeFilter, GenderFilter, \
-    SettlementAreaFilter, BreastFeedingFilter, PregnancyFilter, RecallStatusFilter
+from custom.inddex.filters import FoodTypeFilter, GenderFilter, \
+    SettlementAreaFilter, BreastFeedingFilter, PregnancyFilter, RecallStatusFilter, AgeRangeFilter
 from custom.intrahealth.filters import DateRangeFilter
-from dimagi.utils.dates import force_to_date
 
 
 class ReportMixin(DatespanMixin):
@@ -16,7 +15,6 @@ class ReportMixin(DatespanMixin):
 
     @property
     def report_config(self):
-
         return {
             'domain': self.domain,
             'startdate': self.start_date,
@@ -48,31 +46,54 @@ class BaseMixin:
         raise NotImplementedError('\'get_report_config\' must be implemented')
 
 
-class ReportBaseMixin(BaseMixin):
+class GapsSummaryFoodTypeBaseMixin(BaseMixin):
+    request = None
 
     @staticmethod
     def get_base_fields():
         return [
-            AgeRangeFilter,
-            GenderFilter,
-            SettlementAreaFilter,
-            BreastFeedingFilter,
+            RecallStatusFilter
         ]
 
     @staticmethod
     def get_base_report_config(obj):
         return {
-            'age_range': obj.age_range,
+            'recall_status': obj.recall_status
+        }
+
+    @property
+    def recall_status(self):
+        return self.request.GET.get('recall_status') or ''
+
+
+class ReportBaseMixin(BaseMixin):
+
+    @staticmethod
+    def get_base_fields():
+        return [
+            GenderFilter,
+            AgeRangeFilter,
+            PregnancyFilter,
+            BreastFeedingFilter,
+            SettlementAreaFilter,
+            RecallStatusFilter
+        ]
+
+    @staticmethod
+    def get_base_report_config(obj):
+        return {
             'gender': obj.gender,
-            'urban_rural': obj.urban_rural,
+            'age_range': obj.age_range,
+            'pregnant': obj.pregnant,
             'breastfeeding': obj.breastfeeding,
+            'urban_rural': obj.urban_rural,
+            'supplements': obj.supplements,
+            'recall_status': obj.recall_status
         }
 
     @property
     def age_range(self):
-        age_from = self.request.GET.get('age_range_from')
-        age_to = self.request.GET.get('age_range_to')
-        return age_from, age_to
+        return self.request.GET.get('age_range') or ''
 
     @property
     def gender(self):
@@ -86,31 +107,6 @@ class ReportBaseMixin(BaseMixin):
     def breastfeeding(self):
         return self.request.GET.get('breastfeeding') or ''
 
-
-class NutrientIntakesBaseMixin(ReportBaseMixin):
-
-    @staticmethod
-    def get_base_fields():
-        # TODO Age range filters and FAO/WHO GIFT
-        return [
-            GenderFilter,
-            PregnancyFilter,
-            BreastFeedingFilter,
-            SettlementAreaFilter,
-            RecallStatusFilter
-        ]
-
-    @staticmethod
-    def get_base_report_config(obj):
-        return {
-            'gender': obj.gender,
-            'pregnant': obj.pregnant,
-            'breastfeeding': obj.breastfeeding,
-            'urban_rural': obj.urban_rural,
-            'supplements': obj.supplements,
-            'recall_status': obj.recall_status
-        }
-
     @property
     def pregnant(self):
         return self.request.GET.get('pregnant') or ''
@@ -123,6 +119,18 @@ class NutrientIntakesBaseMixin(ReportBaseMixin):
     def recall_status(self):
         return self.request.GET.get('recall_status') or ''
 
+
+class NutrientIntakesBaseMixin(ReportBaseMixin):
+
+    @staticmethod
+    def get_base_fields():
+        # todo add who/gift filter
+        return ReportBaseMixin.get_base_fields()
+
+    @staticmethod
+    def get_base_report_config(obj):
+        # todo add who/gift value
+        return ReportBaseMixin.get_base_report_config(obj)
 
 class ExceptionReportBaseMixin(BaseMixin):
 

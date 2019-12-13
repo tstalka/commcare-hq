@@ -3,8 +3,8 @@ from custom.inddex.utils import MultiTabularReport
 
 
 class SummaryStatisticsReportBase(ReportBaseMixin, MultiTabularReport):
-    title = 'Summary Statistics Report'
-    name = 'Summary Statistics Reports'
+    title = '3: Summary Statistics Report'
+    name = '3: Summary Statistics Reports'
     slug = 'summary_statistics_report'
 
     @property
