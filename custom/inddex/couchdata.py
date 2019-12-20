@@ -16,7 +16,7 @@ class CouchData:
                 self.tables[table.tag] = table.get_id
 
     @memoized
-    def get_data_from_table(self, table_name=None, fields=None, blank_fields=None, values=None, as_dict=False):
+    def get_data_from_table(self, table_name=None, fields=None, values=None, as_dict=False):
         data = []
         if table_name is None and len(self.tables) == 1:
             table_name = list(self.tables.keys())[0]
@@ -27,8 +27,6 @@ class CouchData:
             return records
         elif not isinstance(fields, tuple):
             raise TypeError('\'fields\' must be a tuple')
-        if not blank_fields:
-            blank_fields = tuple()
         if not isinstance(values, tuple):
             raise TypeError('\'values\' must be a tuple')
         values = self._reassign_values({x[0]: x[1] for x in values})
@@ -57,16 +55,15 @@ class CouchData:
         return record_as_dict
 
     @memoized
-    def as_dict(self, table_name=None, key_field=None, additional_fields=None, blank_fields=None, values=None):
+    def as_dict(self, table_name=None, key_field=None, additional_fields=None, values=None):
         if key_field is None:
             key_field = 'food_code'
         if not additional_fields:
             additional_fields = tuple()
         elif not isinstance(additional_fields, tuple):
-            raise TypeError('\'additional_fields\' mus be a tuple')
+            raise TypeError('\'additional_fields\' must be a tuple')
         messy_dicts = self.get_data_from_table(
-            table_name=table_name, fields=(key_field,)+additional_fields,
-            blank_fields=blank_fields, values=values, as_dict=True
+            table_name=table_name, fields=(key_field,)+additional_fields, values=values, as_dict=True
         )
         clean_dicts = {}
 
